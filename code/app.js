@@ -4,6 +4,9 @@ function getPlot(id) {
     // get samples JSON data, then:
     d3.json("data/samples.json").then((data)=> {
         
+        // get washing freq 
+        var wFreq = data.metadata.map(freq => freq.wfreq)
+
         // filter the samples data by id 
         var samples = data.samples.filter(sample => sample.id.toString() === id)[0];
         
@@ -82,9 +85,6 @@ function getPlot(id) {
 
         // GAUGE CHART
 
-        // get washing freq 
-        var wFreq = data.metadata.map(d => d.wfreq)
-
         // create the gauge
         var dataGauge = [
         {
@@ -93,12 +93,12 @@ function getPlot(id) {
             title: { text: `Weekly Washing Frequency` },
             type: "indicator",
             
-            mode: "gauge+number",
+            mode: "number+gauge",
             gauge: { axis: { range: [null, 9] },
                     steps: [
                         { range: [0, 2], color: "rgb(100, 247, 87)" },
                         { range: [2, 4], color: "rgb(69, 250, 52)" },
-                        { range: [4, 6], color: "rgb(24, 252, 3)" },
+                        { range: [4, 6], color: "rgb(35, 230, 18)" },
                         { range: [6, 8], color: "rgb(19, 204, 2)" },
                         { range: [8, 9], color: "rgb(14, 150, 2)" },
                     ]}
@@ -113,3 +113,54 @@ function getPlot(id) {
         Plotly.newPlot("gauge", dataGauge, layoutGauge);
     });
 } 
+
+// create function to get data
+function getInfo(id) {
+    // get samples JSON data, then:
+    d3.json("data/samples.json").then((data)=> {
+        
+        // get metadata info for demographic box
+        var metadata = data.metadata;
+
+        // filter metadata by id
+        var metaFilter = metadata.filter(data => data.id.toString() === id)[0];
+
+        // reference the HTML element for the metadata
+        var demographicInfo = d3.select("#sample-metadata");
+        
+        // clear the HTML (if there is any)
+        demographicInfo.html("");
+
+        // get demographic data and append to the demographic box
+        Object.entries(metaFilter).forEach((key) => {   
+                demographicInfo.append("h5").text(key[0].toUpperCase() + ": " + key[1] + "\n");    
+        });
+    });
+}
+
+// create function for change events
+function optionChanged(id) {
+    getPlot(id);
+    getInfo(id);
+}
+
+// create function for initial dataset
+function init() {
+    // reference dropdown menu 
+    var dropdown = d3.select("#selDataset");
+
+    // get samples JSON data, then:
+    d3.json("data/samples.json").then((data)=> {
+
+        // get id data for the dropdown options and append them
+        data.names.forEach(function(name) {
+            dropdown.append("option").text(name).property("value");
+        });
+
+        // call getPlot and getInfo and display on page
+        getPlot(data.names[0]);
+        getInfo(data.names[0]);
+    });
+}
+
+init();
