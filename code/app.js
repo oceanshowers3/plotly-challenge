@@ -16,7 +16,7 @@ function getPlot(id) {
         // get otu ids for top 10 samples; reverse order for Plotly
         var OTU_top = (samples.otu_ids.slice(0, 10)).reverse();
         
-        // format otu ids
+        // format OTU ids
         var OTU_id = OTU_top.map(id => "OTU " + id)
 
         // get top 10 labels
@@ -125,13 +125,13 @@ function getInfo(id) {
         // filter metadata by id
         var metaFilter = metadata.filter(data => data.id.toString() === id)[0];
 
-        // reference the HTML element for the metadata
+        // reference the HTML element for metadata
         var demographicInfo = d3.select("#sample-metadata");
         
-        // clear the HTML (if there is any)
+        // clear HTML (if there is any)
         demographicInfo.html("");
 
-        // get demographic data and append to the demographic box
+        // get demographic data and append to demographic box
         Object.entries(metaFilter).forEach((key) => {   
                 demographicInfo.append("h5").text(key[0].toUpperCase() + ": " + key[1] + "\n");    
         });
@@ -152,7 +152,7 @@ function init() {
     // get samples JSON data, then:
     d3.json("data/samples.json").then((data)=> {
 
-        // get id data for the dropdown options and append them
+        // get id data for dropdown options and append them
         data.names.forEach(function(name) {
             dropdown.append("option").text(name).property("value");
         });
