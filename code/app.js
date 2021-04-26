@@ -73,7 +73,6 @@ function getPlot(id) {
         // create layout
         var layout1 = {
             xaxis:{title: "OTU ID"},
-            yaxis_title="OTU Count",
             height: 600,
             width: 1000
         };
